@@ -53,9 +53,9 @@ export class AdminUserResolver {
     return this.adminUserService.remove(id);
   }
 
-  @ResolveField()
-  async role(@Parent() role: Role) {
-    const { id } = role;
+  @ResolveField(() => Role, { nullable: true })
+  async role(@Parent() adminUser: AdminUser) {
+    const { id } = adminUser;
     return this.roleService.findRoleByUserId(id);
   }
 }

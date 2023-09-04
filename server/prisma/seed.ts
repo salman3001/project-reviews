@@ -3,14 +3,16 @@
 import { PrismaClient } from '@prisma/client';
 import { seedAdminUsers } from './seeders/seedAdminUser';
 import { seedRoles } from './seeders/seedRoles';
+import { seedPermissions } from './seeders/seedPermissions';
 
 // initialize Prisma Client
 const prisma = new PrismaClient();
 
 async function main() {
   // create two dummy articles
-  seedAdminUsers(prisma);
-  seedRoles(prisma);
+  await seedPermissions(prisma);
+  await seedRoles(prisma);
+  await seedAdminUsers(prisma);
 }
 
 // execute the main function

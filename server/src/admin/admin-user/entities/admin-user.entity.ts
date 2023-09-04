@@ -19,9 +19,6 @@ export class AdminUser implements Omit<admin, 'password'> {
   @Field()
   isActive: boolean;
 
-  @Field(() => Role)
-  role: Role;
-
   @Field()
   roleId: number;
 

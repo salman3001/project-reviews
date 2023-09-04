@@ -7,29 +7,52 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class RoleService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createRoleInput: CreateRoleInput) {
-    return 'This action adds a new role';
+  async create(createRoleInput: CreateRoleInput) {
+    const { name } = createRoleInput;
+    return await this.prisma.role.create({ data: { name } });
   }
 
-  findAll() {
-    return `This action returns all role`;
+  async findAll() {
+    return await this.prisma.role.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(id: number) {
+    return this.prisma.role.findFirst({ where: { id } });
   }
 
-  update(id: number, updateRoleInput: UpdateRoleInput) {
-    return `This action updates a #${id} role`;
+  async update(id: number, updateRoleInput: UpdateRoleInput) {
+    return await this.prisma.role.update({
+      where: { id },
+      data: { name: updateRoleInput.name },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} role`;
+  async remove(id: number) {
+    return await this.prisma.role.delete({ where: { id } });
   }
 
   async findRoleByUserId(id: number) {
     return await this.prisma.role.findFirst({
       where: { AdminUser: { some: { id } } },
+    });
+  }
+
+  async assignePermissions(roleId: number, permisionIds: number[]) {
+    const permissionObj = permisionIds.map((p) => ({ id: p }));
+    await this.prisma.role.update({
+      where: { id: roleId },
+      data: {
+        permissions: {
+          set: [],
+        },
+      },
+    });
+
+    return await this.prisma.role.update({
+      where: { id: roleId },
+      data: {
+        permissions: { connect: [...permissionObj] },
+      },
     });
   }
 }

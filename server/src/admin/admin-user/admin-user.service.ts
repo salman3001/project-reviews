@@ -17,7 +17,7 @@ export class AdminUserService {
       where: { email },
       select: { email: true },
     });
-    console.log(emailExist);
+
     if (emailExist) {
       throw new HttpException('Email already exist', HttpStatus.NOT_ACCEPTABLE);
     }
@@ -75,5 +75,13 @@ export class AdminUserService {
 
   async remove(id: number) {
     return await this.Prisma.adminUser.delete({ where: { id } });
+  }
+
+  async findAdminUserByRole(roleId: number) {
+    return await this.Prisma.adminUser.findMany({
+      where: {
+        role: { id: roleId },
+      },
+    });
   }
 }
