@@ -1,14 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './admin/auth/auth.module';
-import { AdminUserModule } from './admin/admin-user/admin-user.module';
-import { RolesModule } from './admin/roles/roles.module';
-import { PermissionsModule } from './admin/permissions/permissions.module';
+import { AuthModule } from './auth/auth.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
+import { PrismaService } from './prisma/prisma.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
-  imports: [AuthModule, AdminUserModule, RolesModule, PermissionsModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    AuthModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    }),
+    PrismaModule,
+    AdminModule,
+  ],
+  providers: [PrismaService],
 })
 export class AppModule {}

@@ -1,31 +1,33 @@
-import { AdminUser } from '@prisma/client';
-import { ApiProperty } from '@nestjs/swagger';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { AdminUser as admin } from '@prisma/client';
+import { Role } from 'src/admin/role/entities/role.entity';
 
-export class AdminUserEntity implements AdminUser {
-  @ApiProperty()
+@ObjectType()
+export class AdminUser implements Omit<admin, 'password'> {
+  @Field()
   id: number;
 
-  @ApiProperty()
+  @Field()
   firstName: string;
 
-  @ApiProperty()
+  @Field()
   lastName: string;
 
-  @ApiProperty()
+  @Field()
   email: string;
 
-  @ApiProperty()
-  password: string;
-
-  @ApiProperty()
+  @Field()
   isActive: boolean;
 
-  @ApiProperty()
+  @Field(() => Role)
+  role: Role;
+
+  @Field()
   roleId: number;
 
-  @ApiProperty()
+  @Field()
   createdAt: Date;
 
-  @ApiProperty()
+  @Field()
   updatedAt: Date;
 }

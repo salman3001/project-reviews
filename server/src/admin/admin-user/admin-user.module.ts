@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AdminUserService } from './admin-user.service';
-import { AdminUserController } from './admin-user.controller';
+import { AdminUserResolver } from './admin-user.resolver';
+import { RoleService } from '../role/role.service';
 
 @Module({
-  controllers: [AdminUserController],
-  providers: [AdminUserService],
+  providers: [AdminUserResolver, AdminUserService, RoleService],
 })
 export class AdminUserModule {}
