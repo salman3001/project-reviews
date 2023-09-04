@@ -16,15 +16,16 @@ const adminusers = [
 export const seedAdminUsers = async (
   prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
 ) => {
-  adminusers.forEach(async (user) => {
+  for (let i = 0; i < adminusers.length; i++) {
+    const adminuser = adminusers[i];
     await prisma.adminUser.create({
       data: {
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        password: user.password,
-        roleId: user.roleId,
+        email: adminuser.email,
+        firstName: adminuser.firstName,
+        lastName: adminuser.lastName,
+        password: adminuser.password,
+        roleId: adminuser.roleId,
       },
     });
-  });
+  }
 };

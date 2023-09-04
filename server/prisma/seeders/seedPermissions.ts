@@ -16,7 +16,8 @@ const permissions = [
 export const seedPermissions = async (
   prisma: PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
 ) => {
-  permissions.forEach(async (permission) => {
+  for (let i = 0; i < permissions.length; i++) {
+    const permission = permissions[i];
     await prisma.permission.create({ data: { name: permission.name } });
-  });
+  }
 };
