@@ -3,12 +3,15 @@ import { DefaultArgs } from '@prisma/client/runtime/library';
 
 const roles = [
   {
+    id: 1,
     name: 'SUPER ADMIN',
   },
   {
+    id: 2,
     name: 'REVIEWER',
   },
   {
+    id: 3,
     name: 'VENDER',
   },
 ];
@@ -19,7 +22,18 @@ export const seedRoles = async (
   const addRoles = async () => {
     for (let i = 0; i < roles.length; i++) {
       const role = roles[i];
-      await prisma.role.create({ data: { name: role.name } });
+      await prisma.role.upsert({
+        where: {
+          id: role.id,
+        },
+        update: {
+          name: role.name,
+        },
+        create: {
+          id: role.id,
+          name: role.name,
+        },
+      });
     }
   };
 
@@ -28,12 +42,17 @@ export const seedRoles = async (
       select: { id: true },
     });
 
-    console.log(permission);
+    await prisma.role.update({
+      where: { id: 1 },
+      data: {
+        permissions: { set: [] },
+      },
+    });
 
     await prisma.role.update({
       where: { id: 1 },
       data: {
-        permissions: { connect: [...permission] },
+        permissions: { set: [...permission] },
       },
     });
   };

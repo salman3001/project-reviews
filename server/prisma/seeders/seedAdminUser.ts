@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 
 const adminusers = [
   {
+    id: 1,
     firstName: 'salman',
     lastName: 'khan',
     email: 'salman@gmail.com',
@@ -18,8 +19,17 @@ export const seedAdminUsers = async (
 ) => {
   for (let i = 0; i < adminusers.length; i++) {
     const adminuser = adminusers[i];
-    await prisma.adminUser.create({
-      data: {
+    await prisma.adminUser.upsert({
+      where: { id: adminuser.id },
+      update: {
+        email: adminuser.email,
+        firstName: adminuser.firstName,
+        lastName: adminuser.lastName,
+        password: adminuser.password,
+        roleId: adminuser.roleId,
+      },
+      create: {
+        id: adminuser.id,
         email: adminuser.email,
         firstName: adminuser.firstName,
         lastName: adminuser.lastName,

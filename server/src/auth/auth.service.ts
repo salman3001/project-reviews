@@ -29,6 +29,9 @@ export class AuthService {
     } else {
       const payload = {
         userId: user.id,
+        userType: 'admin',
+        role: user.role.name,
+        permissions: user.role.permissions,
       };
       const userToReturn = {
         userId: user.id,
