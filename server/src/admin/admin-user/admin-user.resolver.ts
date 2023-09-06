@@ -14,7 +14,9 @@ import { UpdateAdminUserInput } from './dto/update-admin-user.input';
 import { Role } from '../role/entities/role.entity';
 import { RoleService } from '../role/role.service';
 import { Roles } from 'src/decorators/Role.decorator';
+import { Permission } from 'src/decorators/Permission.decorator';
 
+@Roles(['VENDER'])
 @Resolver(() => AdminUser)
 export class AdminUserResolver {
   constructor(
@@ -29,7 +31,7 @@ export class AdminUserResolver {
     return this.adminUserService.create(createAdminUserInput);
   }
 
-  @Roles({ userType: 'admin', Permissions: [1, 2], role: 'SUPER ADMIN' })
+  @Permission('DELETE USER')
   @Query(() => [AdminUser], { name: 'adminUsers' })
   findAll() {
     return this.adminUserService.findAll();

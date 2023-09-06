@@ -2,10 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type permisions {
-  name: String!
-}
-
 type user {
   userId: Float!
   firstName: String!
@@ -13,7 +9,7 @@ type user {
   email: String!
   userType: String!
   role: String!
-  permissions: [permisions!]!
+  permissions: [String!]!
 }
 
 type SignedInUser {

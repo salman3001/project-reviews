@@ -1,12 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType({})
-class permisions {
-  @Field()
-  name: string;
-}
-
-@ObjectType({})
 class user {
   @Field()
   userId: number;
@@ -17,12 +11,12 @@ class user {
   @Field()
   email: string;
   @Field()
-  userType: 'admin' | 'web';
+  userType: 'admin' | 'consumer';
   @Field()
   role?: string;
 
-  @Field(() => [permisions])
-  permissions?: permisions[];
+  @Field(() => [String])
+  permissions?: string[];
 }
 
 @ObjectType({})

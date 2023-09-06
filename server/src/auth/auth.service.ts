@@ -29,18 +29,17 @@ export class AuthService {
     } else {
       const payload = {
         userId: user.id,
-        userType: 'admin',
         role: user.role.name,
-        permissions: user.role.permissions,
+        permissions: user.role.permissions.map((p) => p.name),
       };
       const userToReturn = {
         userId: user.id,
+        type: 'admin', //consumer
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        userType: 'admin',
         role: user.role.name,
-        permissions: user.role.permissions,
+        permissions: user.role.permissions.map((p) => p.name),
       };
       return {
         token: await this.jwtService.signAsync(payload),
