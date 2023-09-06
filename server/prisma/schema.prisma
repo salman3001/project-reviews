@@ -35,3 +35,9 @@ model permission {
   name String
   Role Role[]
 }
+
+model assets {
+  id   Int    @id @default(autoincrement())
+  type String
+  url  String
+}

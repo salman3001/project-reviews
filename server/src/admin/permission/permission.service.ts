@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { Roles } from 'src/decorators/Role.decorator';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+@Roles(['SUPER ADMIN'])
 @Injectable()
 export class PermissionService {
   constructor(private readonly prisma: PrismaService) {}

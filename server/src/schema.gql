@@ -46,6 +46,11 @@ type Permission {
   name: String!
 }
 
+type Asset {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   adminUsers: [AdminUser!]!
   adminUser(id: Int!): AdminUser!
@@ -53,6 +58,7 @@ type Query {
   role(id: Int!): Role!
   permissions: [Permission!]!
   permission(id: Int!): Permission!
+  asset(id: Int!): Asset!
 }
 
 type Mutation {
@@ -64,6 +70,9 @@ type Mutation {
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
   removeRole(id: Int!): Role!
   assignPermissions(roleId: Int!, permissionIds: [Int!]!): Role!
+  createAsset(createAssetInput: CreateAssetInput!): Asset!
+  updateAsset(updateAssetInput: UpdateAssetInput!): Asset!
+  removeAsset(id: Int!): Asset!
 }
 
 input AdminSininInput {
@@ -96,5 +105,16 @@ input CreateRoleInput {
 
 input UpdateRoleInput {
   name: String
+  id: Int!
+}
+
+input CreateAssetInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateAssetInput {
+  """Example field (placeholder)"""
+  exampleField: Int
   id: Int!
 }

@@ -16,7 +16,7 @@ import { RoleService } from '../role/role.service';
 import { Roles } from 'src/decorators/Role.decorator';
 import { Permission } from 'src/decorators/Permission.decorator';
 
-@Roles(['VENDER'])
+@Roles(['SUPER ADMIN'])
 @Resolver(() => AdminUser)
 export class AdminUserResolver {
   constructor(
@@ -31,7 +31,6 @@ export class AdminUserResolver {
     return this.adminUserService.create(createAdminUserInput);
   }
 
-  @Permission('DELETE USER')
   @Query(() => [AdminUser], { name: 'adminUsers' })
   findAll() {
     return this.adminUserService.findAll();

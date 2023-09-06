@@ -9,6 +9,7 @@ import { AdminModule } from './admin/admin.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
+import { AssetModule } from './asset/asset.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
     }),
     PrismaModule,
     AdminModule,
+    AssetModule,
   ],
   providers: [PrismaService, { provide: APP_GUARD, useClass: AuthGuard }],
 })
