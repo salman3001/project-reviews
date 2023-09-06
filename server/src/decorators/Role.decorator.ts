@@ -1,3 +1,11 @@
 import { Reflector } from '@nestjs/core';
+import { Permissions } from 'src/auth/interface/Permissions';
+import { RolesTypes } from 'src/auth/interface/RolesTypes';
 
-export const Roles = Reflector.createDecorator<string[]>();
+interface RoleOptions {
+  userType: 'admin' | 'user';
+  role: RolesTypes;
+  Permissions: Permissions[];
+}
+
+export const Roles = Reflector.createDecorator<RoleOptions>();
