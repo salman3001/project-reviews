@@ -27,6 +27,7 @@ export const seedAdminUsers = async (
         lastName: adminuser.lastName,
         password: adminuser.password,
         roleId: adminuser.roleId,
+        isActive: true,
       },
       create: {
         id: adminuser.id,
@@ -35,6 +36,7 @@ export const seedAdminUsers = async (
         lastName: adminuser.lastName,
         password: adminuser.password,
         roleId: adminuser.roleId,
+        isActive: true,
       },
     });
   }

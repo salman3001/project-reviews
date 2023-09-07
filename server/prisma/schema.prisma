@@ -16,11 +16,12 @@ model AdminUser {
   lastName  String
   email     String   @unique
   password  String
-  isActive  Boolean? @default(false)
+  isActive  Boolean  @default(false)
   role      Role?    @relation(fields: [roleId], references: [id], onDelete: SetNull)
   roleId    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  assets    Asset[]
 }
 
 model Role {
@@ -36,8 +37,25 @@ model permission {
   Role Role[]
 }
 
-model assets {
-  id   Int    @id @default(autoincrement())
-  type String
-  url  String
+model User {
+  id              Int     @id @default(autoincrement())
+  userName        Int
+  email           String
+  firstName       String?
+  lastName        String?
+  isEmailVarified Boolean @default(false)
+  password        String?
+  isPasswordSet   Boolean
+  iaActive        Boolean @default(false)
+  images          Asset[]
+}
+
+model Asset {
+  id          Int        @id @default(autoincrement())
+  type        String
+  url         String
+  userId      Int?
+  adminUserId Int?
+  User        User?      @relation(fields: [userId], references: [id])
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
 }
