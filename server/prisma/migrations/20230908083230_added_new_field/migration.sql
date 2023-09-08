@@ -1,0 +1,49 @@
+-- RedefineTables
+PRAGMA foreign_keys=OFF;
+CREATE TABLE "new_Asset" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "type" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+    "description" TEXT,
+    "adminUserId" INTEGER,
+    "userId" INTEGER,
+    CONSTRAINT "Asset_adminUserId_fkey" FOREIGN KEY ("adminUserId") REFERENCES "AdminUser" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "Asset_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+INSERT INTO "new_Asset" ("adminUserId", "id", "type", "url", "userId") SELECT "adminUserId", "id", "type", "url", "userId" FROM "Asset";
+DROP TABLE "Asset";
+ALTER TABLE "new_Asset" RENAME TO "Asset";
+CREATE TABLE "new_User" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "userName" INTEGER NOT NULL,
+    "email" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "isEmailVarified" BOOLEAN NOT NULL DEFAULT false,
+    "password" TEXT,
+    "isPasswordSet" BOOLEAN NOT NULL,
+    "iaActive" BOOLEAN NOT NULL DEFAULT false,
+    "avatarId" INTEGER
+);
+INSERT INTO "new_User" ("email", "firstName", "iaActive", "id", "isEmailVarified", "isPasswordSet", "lastName", "password", "userName") SELECT "email", "firstName", "iaActive", "id", "isEmailVarified", "isPasswordSet", "lastName", "password", "userName" FROM "User";
+DROP TABLE "User";
+ALTER TABLE "new_User" RENAME TO "User";
+CREATE TABLE "new_AdminUser" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT false,
+    "roleId" INTEGER,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    "avatarId" INTEGER,
+    CONSTRAINT "AdminUser_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+INSERT INTO "new_AdminUser" ("createdAt", "email", "firstName", "id", "isActive", "lastName", "password", "roleId", "updatedAt") SELECT "createdAt", "email", "firstName", "id", coalesce("isActive", false) AS "isActive", "lastName", "password", "roleId", "updatedAt" FROM "AdminUser";
+DROP TABLE "AdminUser";
+ALTER TABLE "new_AdminUser" RENAME TO "AdminUser";
+CREATE UNIQUE INDEX "AdminUser_email_key" ON "AdminUser"("email");
+PRAGMA foreign_key_check;
+PRAGMA foreign_keys=ON;

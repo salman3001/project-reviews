@@ -3,10 +3,21 @@ import { Asset as A } from '@prisma/client';
 
 @ObjectType()
 export class Asset implements A {
+  @Field(() => Int)
   id: number;
+
+  @Field(() => String)
   type: string;
+
+  @Field(() => String)
   url: string;
-  userId: number;
+
+  @Field(() => String, { nullable: true })
+  description: string | null;
+
+  @Field(() => Int, { nullable: true })
   adminUserId: number;
-  exampleField: number;
+
+  @Field(() => Int, { nullable: true })
+  userId: number;
 }

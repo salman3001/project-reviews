@@ -1,20 +1,21 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 import { AdminUser } from '@prisma/client';
 import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 
 @InputType()
 export class CreateAdminUserInput
   implements Omit<AdminUser, 'id' | 'createdAt' | 'updatedAt'>
 {
-  @Field()
+  @Field(() => String)
   @IsNotEmpty()
   firstName: string;
 
-  @Field()
+  @Field(() => String)
   @IsNotEmpty()
   lastName: string;
 
-  @Field()
+  @Field(() => String)
   @IsNotEmpty()
   @IsEmail()
   email: string;
@@ -23,10 +24,16 @@ export class CreateAdminUserInput
   @Matches('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')
   password: string;
 
-  @Field()
+  @Field(() => Boolean)
   @IsNotEmpty()
   isActive: boolean;
 
-  @Field()
+  @Field(() => Int, { nullable: true })
   roleId: number;
+
+  @Field(() => Int, { nullable: true })
+  avatarId: number | null;
+
+  @Field(() => GraphQLUpload, { nullable: true })
+  avatar: string;
 }

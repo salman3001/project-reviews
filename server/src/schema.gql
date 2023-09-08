@@ -18,15 +18,18 @@ type SignedInUser {
 }
 
 type AdminUser {
-  id: Float!
+  id: Int!
   firstName: String!
   lastName: String!
   email: String!
   isActive: Boolean!
-  roleId: Float!
+  roleId: Int
+  avatarId: Int
   createdAt: DateTime!
   updatedAt: DateTime!
   role: Role
+  Avatar: String
+  Assets: [Asset!]
 }
 
 """
@@ -41,14 +44,18 @@ type Role {
   adminUsers: [AdminUser!]
 }
 
+type Asset {
+  id: Int!
+  type: String!
+  url: String!
+  description: String
+  adminUserId: Int
+  userId: Int
+}
+
 type Permission {
   id: Float!
   name: String!
-}
-
-type Asset {
-  """Example field (placeholder)"""
-  exampleField: Int!
 }
 
 type Query {
@@ -59,6 +66,7 @@ type Query {
   permissions: [Permission!]!
   permission(id: Int!): Permission!
   asset(id: Int!): Asset!
+  sendForgotPasswordEmail(to: String!): String!
 }
 
 type Mutation {
@@ -70,7 +78,6 @@ type Mutation {
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
   removeRole(id: Int!): Role!
   assignPermissions(roleId: Int!, permissionIds: [Int!]!): Role!
-  createAsset(createAssetInput: CreateAssetInput!): Asset!
   updateAsset(updateAssetInput: UpdateAssetInput!): Asset!
   removeAsset(id: Int!): Asset!
 }
@@ -86,8 +93,13 @@ input CreateAdminUserInput {
   email: String!
   password: String!
   isActive: Boolean!
-  roleId: Float!
+  roleId: Int
+  avatarId: Int
+  avatar: Upload
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input UpdateAdminUserInput {
   firstName: String
@@ -95,7 +107,9 @@ input UpdateAdminUserInput {
   email: String
   password: String
   isActive: Boolean
-  roleId: Float
+  roleId: Int
+  avatarId: Int
+  avatar: Upload
   id: Int!
 }
 
@@ -108,13 +122,9 @@ input UpdateRoleInput {
   id: Int!
 }
 
-input CreateAssetInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 input UpdateAssetInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  type: String
+  file: Upload
+  description: String
   id: Int!
 }

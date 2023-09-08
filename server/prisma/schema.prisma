@@ -21,6 +21,7 @@ model AdminUser {
   roleId    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  avatarId  Int?
   assets    Asset[]
 }
 
@@ -47,15 +48,17 @@ model User {
   password        String?
   isPasswordSet   Boolean
   iaActive        Boolean @default(false)
-  images          Asset[]
+  avatarId        Int?
+  assets          Asset[]
 }
 
 model Asset {
   id          Int        @id @default(autoincrement())
   type        String
   url         String
-  userId      Int?
+  description String?
+  AdminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
   adminUserId Int?
   User        User?      @relation(fields: [userId], references: [id])
-  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
+  userId      Int?
 }

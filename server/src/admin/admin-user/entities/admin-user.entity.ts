@@ -1,29 +1,33 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { AdminUser as admin } from '@prisma/client';
+import { Asset } from 'src/asset/entities/asset.entity';
 
 @ObjectType()
 export class AdminUser implements Omit<admin, 'password'> {
-  @Field()
+  @Field(() => Int)
   id: number;
 
-  @Field()
+  @Field(() => String)
   firstName: string;
 
-  @Field()
+  @Field(() => String)
   lastName: string;
 
-  @Field()
+  @Field(() => String)
   email: string;
 
-  @Field()
+  @Field(() => Boolean)
   isActive: boolean;
 
-  @Field()
+  @Field(() => Int, { nullable: true })
   roleId: number;
 
-  @Field()
+  @Field(() => Int, { nullable: true })
+  avatarId: number;
+
+  @Field(() => Date)
   createdAt: Date;
 
-  @Field()
+  @Field(() => Date)
   updatedAt: Date;
 }

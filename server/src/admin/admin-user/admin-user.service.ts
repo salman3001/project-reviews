@@ -7,7 +7,7 @@ import { hashSync } from 'bcrypt';
 @Injectable()
 export class AdminUserService {
   constructor(private Prisma: PrismaService) {}
-  async create(createAdminUserInput: CreateAdminUserInput) {
+  async create(createAdminUserInput: Omit<CreateAdminUserInput, 'avatar'>) {
     const { email, firstName, isActive, lastName, roleId, password } =
       createAdminUserInput;
 

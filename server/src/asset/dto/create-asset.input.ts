@@ -1,22 +1,20 @@
-import { InputType, Field, Int } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql';
 import { Asset } from '@prisma/client';
 import { IsNotEmpty } from 'class-validator';
-import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
-import Upload from 'graphql-upload/Upload.mjs';
+import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
 
 @InputType()
-export class CreateAssetInput implements Omit<Asset, 'id' | 'url'> {
-  @Field()
+export class CreateAssetInput
+  implements Omit<Asset, 'id' | 'url' | 'userId' | 'adminUserId'>
+{
+  @Field(() => String)
   @IsNotEmpty()
   type: string;
 
   @Field(() => GraphQLUpload)
   @IsNotEmpty()
-  files: Promise<Upload>[];
+  file: any;
 
-  @Field(() => Int, { nullable: true })
-  userId: number | null;
-
-  @Field(() => Int, { nullable: true })
-  adminUserId: number | null;
+  @Field(() => String, { nullable: true })
+  description: string;
 }
