@@ -7,4 +7,5 @@ export default () => ({
     user: process.env.Mail_USER,
     pass: process.env.Mail_PASS,
   },
+  supportTeamEmail: process.env.SUPPORT_TEAM_EMAIL,
 });

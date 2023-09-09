@@ -15,9 +15,6 @@ import { Role } from '../role/entities/role.entity';
 import { RoleService } from '../role/role.service';
 import { Roles } from 'src/decorators/Role.decorator';
 import { Permission } from 'src/decorators/Permission.decorator';
-import { Asset } from 'src/asset/entities/asset.entity';
-import { AssetService } from 'src/asset/asset.service';
-import { GQLFile } from 'src/asset/interface/GQLFile';
 
 // @Roles(['SUPER ADMIN'])
 @Resolver(() => AdminUser)
@@ -25,7 +22,6 @@ export class AdminUserResolver {
   constructor(
     private readonly adminUserService: AdminUserService,
     private readonly roleService: RoleService,
-    private readonly assetService: AssetService,
   ) {}
 
   @Mutation(() => AdminUser)
@@ -33,23 +29,23 @@ export class AdminUserResolver {
     @Args('createAdminUserInput') createAdminUserInput: CreateAdminUserInput,
   ) {
     const { avatar, ...input } = createAdminUserInput;
-    const adminUser = await this.adminUserService.create(input);
-    const isValidImage = this.assetService.validateImageFIle(
-      avatar as unknown as GQLFile,
-    );
-    if (isValidImage) {
-      const createdAvatar = await this.assetService.create(
-        'image',
-        avatar as unknown as GQLFile,
-        '',
-        adminUser.id,
-      );
+    return await this.adminUserService.create(input);
+    // const isValidImage = this.assetService.validateImageFIle(
+    //   avatar as unknown as GQLFile,
+    // );
+    // if (isValidImage) {
+    //   const createdAvatar = await this.assetService.create(
+    //     'image',
+    //     avatar as unknown as GQLFile,
+    //     '',
+    //     adminUser.id,
+    //   );
 
-      this.adminUserService.update(adminUser.id, {
-        avatarId: createdAvatar.id,
-        id: adminUser.id,
-      });
-    }
+    //   this.adminUserService.update(adminUser.id, {
+    //     avatarId: createdAvatar.id,
+    //     id: adminUser.id,
+    //   });
+    // }
   }
 
   @Query(() => [AdminUser], { name: 'adminUsers' })
@@ -83,15 +79,15 @@ export class AdminUserResolver {
     return this.roleService.findRoleByUserId(id);
   }
 
-  @ResolveField(() => String, { nullable: true })
-  async Avatar(@Parent() adminUser: AdminUser) {
-    const { avatarId: assetId } = adminUser;
-    return this.assetService.findOne(assetId);
-  }
+  // @ResolveField(() => String, { nullable: true })
+  // async Avatar(@Parent() adminUser: AdminUser) {
+  //   const { avatarId: assetId } = adminUser;
+  //   return this.assetService.findOne(assetId);
+  // }
 
-  @ResolveField(() => [Asset], { nullable: true })
-  async Assets(@Parent() adminUser: AdminUser) {
-    const { id } = adminUser;
-    return this.assetService.findAdminUserAssets(id);
-  }
+  // @ResolveField(() => [Asset], { nullable: true })
+  // async Assets(@Parent() adminUser: AdminUser) {
+  //   const { id } = adminUser;
+  //   return this.assetService.findAdminUserAssets(id);
+  // }
 }

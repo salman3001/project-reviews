@@ -34,7 +34,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.10",
     "@prisma/client": "^5.2.0",
-    "@types/graphql-upload": "^16.0.1",
+    "apollo-server-express": "^3.12.1",
     "bcrypt": "^5.1.1",
     "bull": "^4.11.3",
     "class-transformer": "^0.5.1",
@@ -42,9 +42,11 @@
     "graphql": "^16.8.0",
     "graphql-upload": "^14.0.0",
     "handlebars": "^4.7.8",
+    "module-alias": "^2.2.3",
     "nodemailer": "^6.9.5",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "sharp": "^0.32.5",
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
@@ -53,7 +55,10 @@
     "@nestjs/testing": "^10.0.0",
     "@types/bcrypt": "^5.0.0",
     "@types/express": "^4.17.17",
+    "@types/graphql-upload": "^16.0.1",
     "@types/jest": "^29.5.2",
+    "@types/module-alias": "^2.0.2",
+    "@types/multer": "^1.4.7",
     "@types/node": "^20.3.1",
     "@types/nodemailer": "^6.4.9",
     "@types/supertest": "^2.0.12",
@@ -92,5 +97,10 @@
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@src": "./src",
+    "@client": "../client"
   }
 }

@@ -28,8 +28,6 @@ type AdminUser {
   createdAt: DateTime!
   updatedAt: DateTime!
   role: Role
-  Avatar: String
-  Assets: [Asset!]
 }
 
 """
@@ -44,18 +42,16 @@ type Role {
   adminUsers: [AdminUser!]
 }
 
-type Asset {
-  id: Int!
-  type: String!
-  url: String!
-  description: String
-  adminUserId: Int
-  userId: Int
-}
-
 type Permission {
   id: Float!
   name: String!
+}
+
+type Image {
+  id: Int!
+  alt: String
+  url_sm: String!
+  url: String!
 }
 
 type Query {
@@ -65,8 +61,9 @@ type Query {
   role(id: Int!): Role!
   permissions: [Permission!]!
   permission(id: Int!): Permission!
-  asset(id: Int!): Asset!
   sendForgotPasswordEmail(to: String!): String!
+  sendVarificationEmail(to: String!): String!
+  image(id: Int!): Image!
 }
 
 type Mutation {
@@ -78,8 +75,9 @@ type Mutation {
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
   removeRole(id: Int!): Role!
   assignPermissions(roleId: Int!, permissionIds: [Int!]!): Role!
-  updateAsset(updateAssetInput: UpdateAssetInput!): Asset!
-  removeAsset(id: Int!): Asset!
+  createImage(createImageInput: CreateImageInput!): Image!
+  updateImage(updateImageInput: UpdateImageInput!): Image!
+  removeImage(id: Int!): Image!
 }
 
 input AdminSininInput {
@@ -122,9 +120,13 @@ input UpdateRoleInput {
   id: Int!
 }
 
-input UpdateAssetInput {
-  type: String
+input CreateImageInput {
+  alt: String!
+  file: Upload!
+}
+
+input UpdateImageInput {
+  alt: String
   file: Upload
-  description: String
   id: Int!
 }

@@ -1,6 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { AdminUser as admin } from '@prisma/client';
-import { Asset } from 'src/asset/entities/asset.entity';
 
 @ObjectType()
 export class AdminUser implements Omit<admin, 'password'> {

@@ -1,6 +1,5 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { MailService } from './mail.service';
-import { GraphQLError } from 'graphql';
 
 @Resolver()
 export class MailResolver {
@@ -11,6 +10,12 @@ export class MailResolver {
     @Args('to', { type: () => String }) to: string,
   ) {
     await this.mailService.forgotPasswordEmail(to);
-    return 'Email Sent! Please click the link sent to your email to reset the password';
+    return 'Success';
+  }
+
+  @Query(() => String)
+  async sendVarificationEmail(@Args('to', { type: () => String }) to: string) {
+    await this.mailService.sendEmailVarifyEmail(to);
+    return {};
   }
 }

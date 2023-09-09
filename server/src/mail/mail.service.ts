@@ -1,5 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { GraphQLError } from 'graphql';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -10,10 +11,36 @@ export class MailService {
     private mailerService: MailerService,
     private jwtService: JwtService,
     private prisma: PrismaService,
+    private config: ConfigService,
   ) {}
 
   async forgotPasswordEmail(to: string) {
-    console.log('ran');
+    const user = await this.prisma.adminUser.findFirst({
+      where: {
+        email: to,
+      },
+    });
+
+    if (!user) throw new GraphQLError('This email doesnt exist');
+    const token = this.jwtService.sign({ userId: user.id });
+
+    try {
+      await this.mailerService.sendMail({
+        to,
+        from: this.config.get('supportTeamEmail'),
+        subject: 'Forgot Password',
+        template: 'forgotPassword',
+        context: {
+          userName: user.firstName,
+          link: `www.frontend.com/forgotpasswordLink/----${token}`,
+        },
+      });
+    } catch (error) {
+      throw new GraphQLError('Error sending email');
+    }
+  }
+
+  async sendEmailVarifyEmail(to: string) {
     const user = await this.prisma.adminUser.findFirst({
       where: {
         email: to,
@@ -27,7 +54,7 @@ export class MailService {
       await this.mailerService.sendMail({
         to,
         from: 'salman@gmail.com',
-        subject: 'Greeting from NestJS NodeMailer',
+        subject: 'Varify Email ID',
         template: 'forgotPassword',
         context: {
           userName: user.firstName,

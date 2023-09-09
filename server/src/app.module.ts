@@ -9,11 +9,13 @@ import { AdminModule } from './admin/admin.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
-import { AssetModule } from './asset/asset.module';
 import appConfigue from 'src/config/app.configue';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { MailModule } from './mail/mail.module';
+import { ImageModule } from './image/image.module';
+
+console.log(join(__dirname, '/templates'));
 
 @Module({
   imports: [
@@ -31,7 +33,7 @@ import { MailModule } from './mail/mail.module';
           secure: false,
           auth: {
             user: config.get('mail.user'),
-            pass: config.get('mail.password'),
+            pass: config.get('mail.pass'),
           },
         },
         defaults: {
@@ -50,8 +52,8 @@ import { MailModule } from './mail/mail.module';
     AuthModule,
     PrismaModule,
     AdminModule,
-    AssetModule,
     MailModule,
+    ImageModule,
   ],
   providers: [PrismaService, { provide: APP_GUARD, useClass: AuthGuard }],
 })
