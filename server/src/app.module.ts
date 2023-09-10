@@ -1,19 +1,20 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { PrismaService } from './prisma/prisma.service';
-import { PrismaModule } from './prisma/prisma.module';
-import { AdminModule } from './admin/admin.module';
+import { PrismaService } from './modules/prisma/prisma.service';
+import { PrismaModule } from './modules/prisma/prisma.module';
+import { AdminModule } from './modules/admin/admin.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth/guards/auth.guard';
+import { AuthGuard } from './guards/auth.guard';
 import appConfigue from 'src/config/app.configue';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { MailModule } from './mail/mail.module';
-import { ImageModule } from './image/image.module';
+import { MailModule } from './modules/mail/mail.module';
+import { ImageModule } from './modules/image/image.module';
+import { LocationModule } from './modules/location/location.module';
 
 console.log(join(__dirname, '/templates'));
 
@@ -54,6 +55,7 @@ console.log(join(__dirname, '/templates'));
     AdminModule,
     MailModule,
     ImageModule,
+    LocationModule,
   ],
   providers: [PrismaService, { provide: APP_GUARD, useClass: AuthGuard }],
 })

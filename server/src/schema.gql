@@ -22,8 +22,11 @@ type AdminUser {
   firstName: String!
   lastName: String!
   email: String!
+  phone: Int!
   isActive: Boolean!
   roleId: Int
+  lastSeen: DateTime
+  desc: String
   avatarId: Int
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -47,6 +50,52 @@ type Permission {
   name: String!
 }
 
+type Social {
+  id: Int!
+  website: String
+  facebook: String
+  twitter: String
+  instagrame: String
+  pintrest: String
+  vk: String
+  whatsapp: String
+  adminUserId: Int!
+}
+
+type HelpCenterContent {
+  id: Int!
+  title: String!
+  slug: String!
+  content: String!
+  metaTitle: String!
+  metaKeywords: String!
+  metaDesc: String!
+  helpCenterCategoryId: Int!
+  languageId: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type HelpCenterCategory {
+  id: Int!
+  name: String!
+  slug: String!
+  metaTitle: String!
+  metaKeywords: String!
+  metaDesc: String!
+  languageId: Int!
+}
+
+type Language {
+  id: Int!
+  name: String!
+}
+
+type SupportTicketMessage {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Image {
   id: Int!
   alt: String
@@ -54,17 +103,64 @@ type Image {
   url: String!
 }
 
+type Country {
+  id: Int!
+  name: String!
+  isActive: Boolean!
+}
+
+type State {
+  id: Int!
+  name: String!
+  countryId: Int!
+  isActive: Boolean!
+}
+
+type City {
+  id: Int!
+  name: String!
+  stateId: Int!
+  isActive: Boolean!
+}
+
+type Address {
+  id: String!
+  address: String!
+  cityId: Int
+  stateId: Int
+  countryId: Int
+  zip: String!
+  adminUserId: Int
+}
+
 type Query {
   adminUsers: [AdminUser!]!
   adminUser(id: Int!): AdminUser!
-  roles: [Role!]!
-  role(id: Int!): Role!
+  findAllRoles: [Role!]!
+  findOneRole(id: Int!): Role!
   permissions: [Permission!]!
   permission(id: Int!): Permission!
+  findAllSocial: [Social!]!
+  findOneSocial(id: Int!): Social!
+  findAllHelpCenterContent: [HelpCenterContent!]!
+  findOneHelpCenterContent(id: Int!): HelpCenterContent!
+  findAllHelpCenterCategor: [HelpCenterCategory!]!
+  findOneHelpCenterCategor(id: Int!): HelpCenterCategory!
+  findAllLanguage: [Language!]!
+  findOneLanguage(id: Int!): Language!
+  supportTicketMessage(id: Int!): SupportTicketMessage!
   sendForgotPasswordEmail(to: String!): String!
   sendVarificationEmail(to: String!): String!
   findAllImages: [Image!]!
   findOneImage(id: Int!): Image!
+  findAllCountry: [Country!]!
+  findOneCountry(id: Int!): Country!
+  findAllState: [State!]!
+  findOneState(id: Int!): State!
+  findAllCity: [City!]!
+  findOneCity(id: Int!): City!
+  findAllAddress: [Address!]!
+  findOneAddress(id: Int!): Address!
 }
 
 type Mutation {
@@ -76,9 +172,36 @@ type Mutation {
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
   removeRole(id: Int!): Role!
   assignPermissions(roleId: Int!, permissionIds: [Int!]!): Role!
+  createSocial(createSocialInput: CreateSocialInput!): Social!
+  updateSocial(updateSocialInput: UpdateSocialInput!): Social!
+  removeSocial(id: Int!): Social!
+  createHelpCenterContent(createHelpCenterContentInput: CreateHelpCenterContentInput!): HelpCenterContent!
+  updateHelpCenterContent(updateHelpCenterContentInput: UpdateHelpCenterContentInput!): HelpCenterContent!
+  removeHelpCenterContent(id: Int!): HelpCenterContent!
+  createHelpCenterCategory(createHelpCenterCategoryInput: CreateHelpCenterCategoryInput!): HelpCenterCategory!
+  updateHelpCenterCategory(updateHelpCenterCategoryInput: UpdateHelpCenterCategoryInput!): HelpCenterCategory!
+  removeHelpCenterCategory(id: Int!): HelpCenterCategory!
+  createLanguage(createLanguageInput: CreateLanguageInput!): Language!
+  updateLanguage(updateLanguageInput: UpdateLanguageInput!): Language!
+  removeLanguage(id: Int!): Language!
+  createSupportTicketMessage(createSupportTicketMessageInput: CreateSupportTicketMessageInput!): SupportTicketMessage!
+  updateSupportTicketMessage(updateSupportTicketMessageInput: UpdateSupportTicketMessageInput!): SupportTicketMessage!
+  removeSupportTicketMessage(id: Int!): SupportTicketMessage!
   createImage(createImageInput: CreateImageInput!): Image!
   updateImage(updateImageInput: UpdateImageInput!): Image!
   removeImage(id: Int!): Image!
+  createCountry(createCountryInput: CreateCountryInput!): Country!
+  updateCountry(updateCountryInput: UpdateCountryInput!): Country!
+  removeCountry(id: Int!): Country!
+  createState(createStateInput: CreateStateInput!): State!
+  updateState(updateStateInput: UpdateStateInput!): State!
+  removeState(id: Int!): State!
+  createCity(createCityInput: CreateCityInput!): City!
+  updateCity(updateCityInput: UpdateCityInput!): City!
+  removeCity(id: Int!): City!
+  createAddress(createAddressInput: CreateAddressInput!): Address!
+  updateAddress(updateAddressInput: UpdateAddressInput!): Address!
+  removeAddress(id: Int!): Address!
 }
 
 input AdminSininInput {
@@ -90,25 +213,51 @@ input CreateAdminUserInput {
   firstName: String!
   lastName: String!
   email: String!
+  phone: Int!
+  desc: String
   password: String!
   isActive: Boolean!
   roleId: Int
-  avatarId: Int
   avatar: Upload
+  createAddressInput: CreateAddressInput
+  createSocialInput: CreateSocialInput
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
+input CreateAddressInput {
+  address: String
+  cityId: Int
+  stateId: Int
+  countryId: Int
+  zip: String
+  adminUserId: Int!
+}
+
+input CreateSocialInput {
+  website: String!
+  facebook: String
+  twitter: String
+  instagrame: String
+  pintrest: String
+  vk: String
+  whatsapp: String
+  adminUserId: Int!
+}
+
 input UpdateAdminUserInput {
   firstName: String
   lastName: String
   email: String
+  phone: Int
+  desc: String
   password: String
   isActive: Boolean
   roleId: Int
-  avatarId: Int
   avatar: Upload
+  createAddressInput: CreateAddressInput
+  createSocialInput: CreateSocialInput
   id: Int!
 }
 
@@ -121,13 +270,132 @@ input UpdateRoleInput {
   id: Int!
 }
 
+input UpdateSocialInput {
+  website: String
+  facebook: String
+  twitter: String
+  instagrame: String
+  pintrest: String
+  vk: String
+  whatsapp: String
+  adminUserId: Int
+  id: Int!
+}
+
+input CreateHelpCenterContentInput {
+  title: String!
+  slug: String!
+  content: String
+  metaTitle: String
+  metaKeywords: String
+  metaDesc: String
+  helpCenterCategoryId: Int
+  languageId: Int
+}
+
+input UpdateHelpCenterContentInput {
+  title: String
+  slug: String
+  content: String
+  metaTitle: String
+  metaKeywords: String
+  metaDesc: String
+  helpCenterCategoryId: Int
+  languageId: Int
+  id: Int!
+}
+
+input CreateHelpCenterCategoryInput {
+  name: String!
+  slug: String!
+  metaTitle: String
+  metaKeywords: String
+  metaDesc: String
+  languageId: String!
+}
+
+input UpdateHelpCenterCategoryInput {
+  name: String
+  slug: String
+  metaTitle: String
+  metaKeywords: String
+  metaDesc: String
+  languageId: String
+  id: Int!
+}
+
+input CreateLanguageInput {
+  name: Int!
+}
+
+input UpdateLanguageInput {
+  name: Int
+  id: Int!
+}
+
+input CreateSupportTicketMessageInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateSupportTicketMessageInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
 input CreateImageInput {
-  alt: String!
   file: Upload!
 }
 
 input UpdateImageInput {
-  alt: String
   file: Upload
+  id: Int!
+}
+
+input CreateCountryInput {
+  name: String!
+  isActive: Boolean!
+}
+
+input UpdateCountryInput {
+  name: String
+  isActive: Boolean
+  id: Int!
+}
+
+input CreateStateInput {
+  name: String!
+  countryId: Int
+  isActive: Boolean!
+}
+
+input UpdateStateInput {
+  name: String
+  countryId: Int
+  isActive: Boolean
+  id: Int!
+}
+
+input CreateCityInput {
+  name: String!
+  stateId: Int!
+  isActive: Boolean!
+}
+
+input UpdateCityInput {
+  name: String
+  stateId: Int
+  isActive: Boolean
+  id: Int!
+}
+
+input UpdateAddressInput {
+  address: String
+  cityId: Int
+  stateId: Int
+  countryId: Int
+  zip: String
+  adminUserId: Int
   id: Int!
 }

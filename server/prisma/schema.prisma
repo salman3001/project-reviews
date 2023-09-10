@@ -11,37 +11,65 @@ datasource db {
 }
 
 model AdminUser {
-  id               Int                    @id @default(autoincrement())
-  firstName        String
-  lastName         String
-  email            String                 @unique
-  phone            String?
-  desc             String?
-  password         String
-  isActive         Boolean                @default(false)
-  role             Role?                  @relation(fields: [roleId], references: [id], onDelete: SetNull)
-  roleId           Int?
-  avatar           Image?                 @relation(fields: [avatarId], references: [id])
-  avatarId         Int?
-  memberShipPlan   MembershipPlan?        @relation(fields: [membershipPlanId], references: [id], onDelete: SetNull)
-  membershipPlanId Int?
-  createdAt        DateTime?              @default(now())
-  updatedAt        DateTime?              @updatedAt
-  lastSeen         DateTime?
-  AdminUserAddress AdminUserAddress?
-  Message          SupportTicketMessage[]
-  Social           Social?
+  id        Int                    @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String                 @unique
+  phone     String?
+  desc      String?
+  password  String
+  isActive  Boolean                @default(false)
+  role      Role?                  @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  roleId    Int?
+  avatar    Image?                 @relation(fields: [avatarId], references: [id])
+  avatarId  Int?
+  createdAt DateTime?              @default(now())
+  updatedAt DateTime?              @updatedAt
+  lastSeen  DateTime?
+  address   Address?
+  Message   SupportTicketMessage[]
+  Social    Social?
 }
 
-model AdminUserAddress {
+model Address {
   id          Int        @id @default(autoincrement())
   address     String?
-  city        String?
-  state       String?
-  country     String?
+  city        City?      @relation(fields: [cityId], references: [id])
+  cityId      Int?
+  state       State?     @relation(fields: [stateId], references: [id])
+  stateId     Int?
+  country     Country?   @relation(fields: [countryId], references: [id])
+  countryId   Int?
   zip         String?
   adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
   adminUserId Int?       @unique
+}
+
+model Country {
+  id       Int       @id @default(autoincrement())
+  name     String
+  isActive Boolean   @default(false)
+  State    State[]
+  Address  Address[]
+}
+
+model State {
+  id        Int       @id @default(autoincrement())
+  name      String
+  country   Country?  @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  countryId Int?
+  isActive  Boolean   @default(false)
+  City      City[]
+  Address   Address[]
+}
+
+model City {
+  id       Int       @id @default(autoincrement())
+  name     String
+  state    State?    @relation(fields: [stateId], references: [id], onDelete: SetNull)
+  stateId  Int?
+  isActive Boolean   @default(false)
+  Address  Address[]
 }
 
 model Social {
@@ -55,15 +83,6 @@ model Social {
   whatsapp    String?
   adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
   adminUserId Int        @unique
-}
-
-model MembershipPlan {
-  id        Int         @id @default(autoincrement())
-  name      String
-  status    String      @default("Pending")
-  createdAt DateTime?   @default(now())
-  updatedAt DateTime?   @updatedAt
-  AdminUser AdminUser[]
 }
 
 model Role {
