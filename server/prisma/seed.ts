@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { seedAdminUsers } from './seeders/seedAdminUser';
 import { seedRoles } from './seeders/seedRoles';
 import { seedPermissions } from './seeders/seedPermissions';
+import { seedLanguages } from './seeders/seedLanguage';
 
 // initialize Prisma Client
 const prisma = new PrismaClient();
@@ -13,6 +14,7 @@ async function main() {
   await seedPermissions(prisma);
   await seedRoles(prisma);
   await seedAdminUsers(prisma);
+  await seedLanguages(prisma);
 }
 
 // execute the main function

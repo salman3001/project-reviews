@@ -28,24 +28,7 @@ export class AdminUserResolver {
   async createAdminUser(
     @Args('createAdminUserInput') createAdminUserInput: CreateAdminUserInput,
   ) {
-    const { avatar, ...input } = createAdminUserInput;
-    return await this.adminUserService.create(input);
-    // const isValidImage = this.assetService.validateImageFIle(
-    //   avatar as unknown as GQLFile,
-    // );
-    // if (isValidImage) {
-    //   const createdAvatar = await this.assetService.create(
-    //     'image',
-    //     avatar as unknown as GQLFile,
-    //     '',
-    //     adminUser.id,
-    //   );
-
-    //   this.adminUserService.update(adminUser.id, {
-    //     avatarId: createdAvatar.id,
-    //     id: adminUser.id,
-    //   });
-    // }
+    return await this.adminUserService.create(createAdminUserInput);
   }
 
   @Query(() => [AdminUser], { name: 'adminUsers' })

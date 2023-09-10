@@ -3,18 +3,29 @@ import { CreateAdminUserInput } from './dto/create-admin-user.input';
 import { UpdateAdminUserInput } from './dto/update-admin-user.input';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { hashSync } from 'bcrypt';
+import { ImageService } from '@root/src/image/image.service';
+import { SocialService } from '../social/social.service';
 
 @Injectable()
 export class AdminUserService {
-  constructor(private Prisma: PrismaService) {}
-  async create(createAdminUserInput: Omit<CreateAdminUserInput, 'avatar'>) {
-    const { email, firstName, isActive, lastName, roleId, password } =
-      createAdminUserInput;
+  constructor(
+    private Prisma: PrismaService,
+    private imageService: ImageService,
+    private socialService: SocialService,
+  ) {}
+  async create(createAdminUserInput: CreateAdminUserInput) {
+    const {
+      avatar,
+      createAdminUserAddressInput,
+      createSocialInput,
+      password,
+      ...rest
+    } = createAdminUserInput;
 
     const hashedPassword = hashSync(password, 12);
 
     const emailExist = await this.Prisma.adminUser.findUnique({
-      where: { email },
+      where: { email: rest.email },
       select: { email: true },
     });
 
@@ -22,16 +33,64 @@ export class AdminUserService {
       throw new HttpException('Email already exist', HttpStatus.NOT_ACCEPTABLE);
     }
 
-    return await this.Prisma.adminUser.create({
+    const createdUser = await this.Prisma.adminUser.create({
       data: {
-        email,
-        firstName,
-        lastName,
-        isActive,
-        roleId,
         password: hashedPassword,
+        ...rest,
       },
     });
+
+    if (avatar) {
+      const image = await this.imageService.create({ file: avatar });
+      this.Prisma.adminUser.update({
+        where: {
+          id: createdUser.id,
+        },
+        data: {
+          avatar: {
+            connect: { id: image.id },
+          },
+        },
+      });
+    }
+
+    if (createSocialInput) {
+      const social = await this.Prisma.social.create({
+        data: {
+          facebook: 'salman',
+        },
+      });
+
+      this.Prisma.adminUser.update({
+        where: {
+          id: createdUser.id,
+        },
+        data: {
+          Social: {
+            connect: { id: social.id },
+          },
+        },
+      });
+    }
+
+    if (createAdminUserAddressInput) {
+      const address = await this.Prisma.adminUserAddress.create({
+        data: createAdminUserAddressInput,
+      });
+
+      this.Prisma.adminUser.update({
+        where: {
+          id: createdUser.id,
+        },
+        data: {
+          AdminUserAddress: {
+            connect: { id: address.id },
+          },
+        },
+      });
+    }
+
+    return this.Prisma.adminUser.findUnique({ where: { id: createdUser.id } });
   }
 
   async findAll() {

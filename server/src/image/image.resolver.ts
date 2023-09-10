@@ -13,13 +13,13 @@ export class ImageResolver {
     return this.imageService.create(createImageInput);
   }
 
-  @Query(() => [Image], { name: 'image' })
-  findAll() {
+  @Query(() => [Image])
+  findAllImages() {
     return this.imageService.findAll();
   }
 
-  @Query(() => Image, { name: 'image' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Image)
+  findOneImage(@Args('id', { type: () => Int }) id: number) {
     return this.imageService.findOne(id);
   }
 

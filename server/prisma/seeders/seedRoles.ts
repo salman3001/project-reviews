@@ -4,15 +4,19 @@ import { DefaultArgs } from '@prisma/client/runtime/library';
 const roles = [
   {
     id: 1,
-    name: 'SUPER ADMIN',
+    name: 'Super Admin',
   },
   {
     id: 2,
-    name: 'REVIEWER',
+    name: 'Vender',
   },
   {
     id: 3,
-    name: 'VENDER',
+    name: 'Member',
+  },
+  {
+    id: 3,
+    name: 'Moderator',
   },
 ];
 

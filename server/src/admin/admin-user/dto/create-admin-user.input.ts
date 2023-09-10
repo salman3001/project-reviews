@@ -1,11 +1,23 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
 import { AdminUser } from '@prisma/client';
-import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, Matches } from 'class-validator';
 import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
+import { CreateAdminUserAddressInput } from '../../admin-user-address/dto/create-admin-user-address.input';
+import { CreateSocialInput } from '../../social/dto/create-social.input';
 
 @InputType()
 export class CreateAdminUserInput
-  implements Omit<AdminUser, 'id' | 'createdAt' | 'updatedAt'>
+  implements
+    Omit<
+      AdminUser,
+      | 'id'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'avatarId'
+      | 'roleId'
+      | 'membershipPlanId'
+      | 'lastSeen'
+    >
 {
   @Field(() => String)
   @IsNotEmpty()
@@ -20,6 +32,14 @@ export class CreateAdminUserInput
   @IsEmail()
   email: string;
 
+  @Field(() => Int)
+  @IsNotEmpty()
+  phone: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  desc: string;
+
   @Field()
   @Matches('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$')
   password: string;
@@ -28,12 +48,15 @@ export class CreateAdminUserInput
   @IsNotEmpty()
   isActive: boolean;
 
-  @Field(() => Int, { nullable: true })
-  roleId: number;
-
-  @Field(() => Int, { nullable: true })
-  avatarId: number | null;
-
   @Field(() => GraphQLUpload, { nullable: true })
-  avatar: string;
+  @IsOptional()
+  avatar: GraphQLUpload;
+
+  @Field(() => CreateAdminUserAddressInput, { nullable: true })
+  @IsOptional()
+  createAdminUserAddressInput: CreateAdminUserAddressInput;
+
+  @Field(() => CreateSocialInput, { nullable: true })
+  @IsOptional()
+  createSocialInput: CreateSocialInput;
 }

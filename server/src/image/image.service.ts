@@ -2,16 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { CreateImageInput } from './dto/create-image.input';
 import { UpdateImageInput } from './dto/update-image.input';
 import { GQLFile } from '../types/GQLFile';
-import { createWriteStream, existsSync, mkdirSync, unlinkSync } from 'fs';
+import { createWriteStream, existsSync, mkdirSync } from 'fs';
 import { extname, join, posix, resolve } from 'path';
 import { GraphQLError } from 'graphql';
 import * as sharp from 'sharp';
 import { PrismaService } from '../prisma/prisma.service';
+import { unlink } from 'fs/promises';
 
 @Injectable()
 export class ImageService {
   constructor(private prisma: PrismaService) {}
   async create(createImageInput: CreateImageInput) {
+    const isFileValid = this.validateImageFIle(createImageInput.file);
+
+    if (!isFileValid) throw new GraphQLError('Invalid image formate');
+
     const uploadedFilePqath = await this.uploadImage(
       createImageInput.file,
       join('images'),
@@ -31,19 +36,76 @@ export class ImageService {
   }
 
   findAll() {
-    return `This action returns all image`;
+    return this.prisma.image.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} image`;
+    return this.prisma.image.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
-  update(id: number, updateImageInput: UpdateImageInput) {
-    return `This action updates a #${id} image`;
+  async update(id: number, updateImageInput: UpdateImageInput) {
+    const oldImage = await this.prisma.image.findUnique({
+      where: { id },
+      select: {
+        url: true,
+        url_sm: true,
+      },
+    });
+
+    if (updateImageInput?.file) {
+      const { file, ...rest } = updateImageInput;
+      const isFileValid = await this.validateImageFIle(file);
+      if (!isFileValid) throw new GraphQLError('Invalid image file');
+      try {
+        await this.deleteImage(resolve(join('public', oldImage.url)));
+        await this.deleteImage(resolve(join('public', oldImage.url_sm)));
+      } catch (error) {
+        console.log('failed to delete old image');
+      }
+
+      const uploadedFilePath = await this.uploadImage(
+        updateImageInput.file,
+        join('images'),
+      );
+      const { url, url_sm } = await this.generateWebP(
+        uploadedFilePath,
+        join('images'),
+      );
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+      return this.prisma.image.update({
+        where: {
+          id,
+        },
+        data: { url, url_sm, ...rest },
+      });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { file, ...rest } = updateImageInput;
+    return this.prisma.image.update({
+      where: {
+        id,
+      },
+      data: { ...rest },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} image`;
+  async remove(id: number) {
+    const image = await this.prisma.image.findUnique({ where: { id } });
+    if (!image) throw new GraphQLError('Record not found');
+    try {
+      await this.deleteImage(resolve(join('public', image.url)));
+      await this.deleteImage(resolve(join('public', image.url_sm)));
+    } catch (error) {
+      console.log('failed to delete old image');
+    }
+
+    return this.prisma.image.delete({ where: { id } });
   }
 
   async validateImageFIle(file: GQLFile) {
@@ -93,8 +155,9 @@ export class ImageService {
   }
 
   async generateWebP(imagePath: string, outPutpath: string) {
-    const filePath = join('public', outPutpath, `${Date.now()}.webp`);
-    const filePathSm = join('public', outPutpath, `${Date.now()}-sm.webp`);
+    const sufix = `${Date.now()}`;
+    const filePath = join('public', outPutpath, `${sufix}.webp`);
+    const filePathSm = join('public', outPutpath, `${sufix}-sm.webp`);
 
     const url = posix.join(outPutpath, `${Date.now()}.webp`);
     const url_sm = posix.join(outPutpath, `${Date.now()}-sm.webp`);
@@ -115,11 +178,21 @@ export class ImageService {
       console.log(error);
     }
 
-    unlinkSync(resolve(imagePath));
+    try {
+      await this.deleteImage(resolve(imagePath));
+    } catch (error) {
+      throw new GraphQLError(
+        'Failed to delete the temp image, But images uploaded successfully',
+      );
+    }
 
     return {
       url,
       url_sm,
     };
+  }
+
+  deleteImage(path: string): Promise<void> {
+    return unlink(resolve(path));
   }
 }

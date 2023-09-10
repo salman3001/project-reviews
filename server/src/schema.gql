@@ -63,7 +63,8 @@ type Query {
   permission(id: Int!): Permission!
   sendForgotPasswordEmail(to: String!): String!
   sendVarificationEmail(to: String!): String!
-  image(id: Int!): Image!
+  findAllImages: [Image!]!
+  findOneImage(id: Int!): Image!
 }
 
 type Mutation {
