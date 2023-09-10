@@ -42,7 +42,6 @@ type Role {
   id: Float!
   name: String!
   Permissions: [Permission!]
-  adminUsers: [AdminUser!]
 }
 
 type Permission {

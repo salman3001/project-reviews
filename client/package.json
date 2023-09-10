@@ -9,17 +9,14 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@invictus.codes/nuxt-vuetify": "^0.3.0",
     "@nuxt/devtools": "latest",
     "@nuxtjs/apollo": "^5.0.0-alpha.6",
-    "autoprefixer": "^10.4.15",
     "nuxt": "^3.7.0",
-    "nuxt-icon": "^0.5.0",
-    "postcss": "^8.4.29",
-    "tailwindcss": "^3.3.3"
+    "nuxt-icon": "^0.5.0"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
-    "daisyui": "^3.6.4",
     "pinia": "^2.1.6"
   },
   "overrides": {

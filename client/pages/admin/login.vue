@@ -1,96 +1,65 @@
 <script setup lang="ts">
-import useAuthStore from "~/store/useAuthStroe";
-definePageMeta({
-  middleware: ["guest"],
-});
+// import useAuthStore from "~/store/useAuthStroe";
+// definePageMeta({
+//   middleware: ["guest"],
+// });
 
-const email = useState("email", () => "");
-const password = useState("password", () => "");
-const authStore = useAuthStore();
+// const email = useState("email", () => "");
+// const password = useState("password", () => "");
+// const authStore = useAuthStore();
 
-const query = gql`
-  mutation ($input: AdminSininInput!) {
-    adminSignIn(adminSigninInput: $input) {
-      token
-      user {
-        firstName
-      }
-    }
-  }
-`;
+// const query = gql`
+//   mutation ($input: AdminSininInput!) {
+//     adminSignIn(adminSigninInput: $input) {
+//       token
+//       user {
+//         firstName
+//       }
+//     }
+//   }
+// `;
 
-const variables = {
-  input: {
-    email: email.value,
-    password: password.value,
-  },
-};
+// const variables = {
+//   input: {
+//     email: email.value,
+//     password: password.value,
+//   },
+// };
 
-const login = async () => {
-  const { data, error } = await useAsyncQuery({ query, variables });
-  if ((data.value as any)?.adminSignIn?.token) {
-    authStore.setUser(data.value);
-    navigateTo("/admin");
-  }
-  if (error) {
-    alert("invalid credential");
-  }
-};
+// const login = async () => {
+//   const { data, error } = await useAsyncQuery({ query, variables });
+//   if ((data.value as any)?.adminSignIn?.token) {
+//     authStore.setUser(data.value);
+//     navigateTo("/admin");
+//   }
+//   if (error) {
+//     alert("invalid credential");
+//   }
+// };
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row h-screen p-10 bg-base-300 text-slate">
-    <div class="flex justify-center items-center w-full">
-      <img
-        src="~/assets/images/login.png"
-        alt="login-image"
-        class="object-contain h-full"
-      />
-    </div>
-    <div class="w-full flex justify-center items-center p-10">
-      <form
-        class="text-start space-y-2 max-w-sm"
-        @submit.prevent="() => login()"
-      >
-        <BrandName />
-        <h1 class="text-slate-600 text-4xl font-semibold">
-          Welcome to Admin Dashboard! 👋
-        </h1>
-        <p class="text-slate-600">
-          Please sign in to your account and start the adventure
+  <div class="d-flex align-center justify-center" style="height: 100vh">
+    <v-sheet width="400" class="mx-auto">
+      <v-form fast-fail>
+        <v-text-field label="User Name"></v-text-field>
+
+        <v-text-field label="password"></v-text-field>
+        <a href="#" class="text-body-2 font-weight-regular">Forgot Password?</a>
+
+        <v-btn
+          type="submit"
+          color="transparent"
+          block
+          class="mt-2 elevation-19 light-green display-1"
+          >Sign in</v-btn
+        >
+      </v-form>
+      <div class="mt-2">
+        <p class="text-body-2 tit">
+          Don't have an account? <a href="#">Sign Up</a>
         </p>
-        <div class="form-control w-full">
-          <label for="email">Email</label>
-          <input
-            type="text"
-            name="email"
-            placeholder="Type here"
-            class="input input-bordered w-full"
-            v-model="email"
-          />
-        </div>
-        <div class="form-control w-full">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Type here"
-            class="input input-bordered w-full"
-            v-model="password"
-          />
-        </div>
-        <div className="form-control">
-          <label className="label cursor-pointer flex justify-start gap-3">
-            <input
-              type="checkbox"
-              className="checkbox checkbox-primary"
-              name="remember_me"
-            />
-            <span className="label-text">Remember me</span>
-          </label>
-        </div>
-        <button type="submit" class="btn btn-primary w-full">Sign in</button>
-      </form>
-    </div>
+      </div>
+    </v-sheet>
   </div>
 </template>
