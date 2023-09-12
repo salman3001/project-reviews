@@ -8,6 +8,8 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@invictus.codes/nuxt-vuetify",
   ],
+  devtools: { enabled: false },
+  modules: ["nuxt-icon", "@nuxtjs/apollo", "@pinia/nuxt"],
   apollo: {
     autoImports: true,
     clients: {
@@ -41,5 +43,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     baseApi: "http://localhost:3000/graphql",
   },
-  css: ["~/assets/css/main.css"],
+  css: ["vuetify/lib/styles/main.sass"],
+  build: {
+    transpile: ["vuetify"],
+  },
 });

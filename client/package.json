@@ -9,7 +9,6 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@invictus.codes/nuxt-vuetify": "^0.3.0",
     "@nuxt/devtools": "latest",
     "@nuxtjs/apollo": "^5.0.0-alpha.6",
     "nuxt": "^3.7.0",
@@ -21,9 +20,11 @@
     "@pinia/nuxt": "^0.4.11",
     "graphql": "^16.8.0",
     "nuxt-graphql-server": "^2.0.1",
-    "pinia": "^2.1.6"
+    "pinia": "^2.1.6",
+    "sass": "^1.66.1",
+    "vuetify": "^3.4.0-alpha.1"
   },
   "overrides": {
-    "vue": "latest"
+    "vue": "^3.3.4"
   }
 }
