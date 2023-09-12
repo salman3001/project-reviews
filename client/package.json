@@ -16,7 +16,11 @@
     "nuxt-icon": "^0.5.0"
   },
   "dependencies": {
+    "@apollo/server": "^4.9.3",
+    "@as-integrations/h3": "^1.1.6",
     "@pinia/nuxt": "^0.4.11",
+    "graphql": "^16.8.0",
+    "nuxt-graphql-server": "^2.0.1",
     "pinia": "^2.1.6"
   },
   "overrides": {

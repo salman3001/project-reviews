@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   modules: [
     "nuxt-icon",
     "@nuxtjs/apollo",
+    "nuxt-graphql-server",
     "@pinia/nuxt",
     "@invictus.codes/nuxt-vuetify",
   ],
@@ -14,6 +15,11 @@ export default defineNuxtConfig({
         httpEndpoint: "http://localhost:3000/graphql",
       },
     },
+  },
+  graphqlServer: {
+    // config
+    url: "/api/graphql",
+    schema: "./server/**/*.graphql",
   },
   vuetify: {
     /* vuetify options */
