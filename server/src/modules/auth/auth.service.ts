@@ -34,7 +34,6 @@ export class AuthService {
       };
       const userToReturn = {
         userId: user.id,
-        type: 'admin', //consumer
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,

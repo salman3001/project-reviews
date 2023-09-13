@@ -3,48 +3,22 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     "nuxt-icon",
-    "@nuxtjs/apollo",
-    "nuxt-graphql-server",
     "@pinia/nuxt",
-    "@invictus.codes/nuxt-vuetify",
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/apollo",
   ],
-  devtools: { enabled: false },
-  modules: ["nuxt-icon", "@nuxtjs/apollo", "@pinia/nuxt"],
   apollo: {
-    autoImports: true,
     clients: {
       default: {
-        httpEndpoint: "http://localhost:3000/graphql",
+        httpEndpoint: "http://localhost:3001/graphql",
       },
     },
   },
-  graphqlServer: {
-    // config
-    url: "/api/graphql",
-    schema: "./server/**/*.graphql",
-  },
-  vuetify: {
-    /* vuetify options */
-    vuetifyOptions: {
-      // @TODO: list all vuetify options
-    },
 
-    moduleOptions: {
-      /* nuxt-vuetify module options */
-      treeshaking: true,
-      useIconCDN: false,
-
-      /* vite-plugin-vuetify options */
-      styles: true,
-      autoImport: true,
-      useVuetifyLabs: true,
-    },
-  },
   runtimeConfig: {
     baseApi: "http://localhost:3000/graphql",
-  },
-  css: ["vuetify/lib/styles/main.sass"],
-  build: {
-    transpile: ["vuetify"],
+    public: {
+      GQL_HOST: "http://127.0.0.1:3001/graphql",
+    },
   },
 });

@@ -7,7 +7,6 @@ type user {
   firstName: String!
   lastName: String!
   email: String!
-  userType: String!
   role: String!
   permissions: [String!]!
 }
