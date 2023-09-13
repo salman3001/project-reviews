@@ -1,94 +1,106 @@
 <script setup lang="ts">
 import { Icon } from "#components";
 import useAuthStore from "~/store/useAuthStroe";
-
-const query = gql`
-  query {
-    adminUsers {
-      firstName
-    }
-  }
-`;
-
-// const { mutate } = useMutation(query);
+import BrandLogo from "~/components/BrandLogo.vue";
 
 definePageMeta({
   // middleware: ["guest"],
 });
 
-const authStore = useAuthStore();
+const email = useState("email", () => "");
+const password = useState("password", () => "");
+const auth = useAuthStore();
 const visible = useState("visible", () => false);
 
 const EyeOpenIcon = h(Icon, {
   name: "material-symbols:visibility-outline-rounded",
 });
-const MailIcon = h(Icon, {
-  name: "mdi-email-outline",
-});
 const EyeCloseIcon = h(Icon, {
   name: "material-symbols:visibility-off-outline",
+});
+
+const MailIcon = h(Icon, {
+  name: "mdi-email-outline",
 });
 
 const LockIcon = h(Icon, {
   name: "mdi-lock-outline",
 });
 
-const email = useState("email", () => "");
-const password = useState("password", () => "");
-
-const login = async () => {
-  console.log("ran");
-  const { result, refetch } = useQuery(query);
-  console.log(result);
-  refetch();
-};
+const variables = () => ({
+  input: {
+    email: email.value,
+    password: password.value,
+  },
+});
 </script>
 
 <template>
-  <div
-    class="flex flex-col md:flex-row h-screen p-10 text-slate bg-secondary bg-opacity-10"
+  <form
+    class="p-2 centered"
+    color="secondary"
+    style="
+      background-image: url('/images/login-bg.png');
+      background-position: center;
+      background-color: #f5f0ea;
+      position: relative;
+      height: 100vh;
+    "
+    @submit.prevent="auth.login(variables)"
   >
-    <div class="w-full flex justify-center items-center p-16">
-      <form
-        class="text-start space-y-2 max-w-lg border-2 bg-white rounded-lg p-8 shadow-2xl"
-        @submit.prevent="login"
+    <v-card
+      class="mx-auto pa-6 pb-8"
+      elevation="2"
+      max-width="448"
+      max-height="600"
+      rounded="lg"
+      style="top: 50%; transform: translateY(-50%)"
+    >
+      <BrandLogo />
+      <v-card-text class="text-h5 text-center">Welcome Back!</v-card-text>
+      <v-card-text class="text-caption text-center">
+        Please enter your credentials to login.
+      </v-card-text>
+      <div class="text-subtitle-1 text-medium-emphasis">Email</div>
+      <v-text-field
+        density="compact"
+        placeholder="Email address"
+        :prepend-inner-icon="MailIcon"
+        variant="outlined"
+        v-model="email"
+      ></v-text-field>
+
+      <div
+        class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
       >
-        <!-- <Brand /> -->
-        <h1 class="text-xl font-bold text-center">Welcome back!</h1>
-        <p class="text-slate-600">
-          Please sign in to your account and start the adventure
-        </p>
-        <div class="form-control w-full">
-          <label htmlFor="email">Email</label>
-          <input
-            type="text"
-            name="email"
-            placeholder="Type here"
-            class="input input-bordered w-full"
-          />
-        </div>
-        <div class="form-control w-full">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Type here"
-            class="input input-bordered w-full"
-          />
-          <span class="text-red-500"> </span>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer flex justify-start gap-3">
-            <input
-              type="checkbox"
-              class="checkbox checkbox-primary"
-              name="remember_me"
-            />
-            <span class="label-text">Remember me</span>
-          </label>
-        </div>
-        <button type="submit" class="btn btn-primary w-full">Sign in</button>
-      </form>
-    </div>
-  </div>
+        Password
+      </div>
+
+      <v-text-field
+        :append-inner-icon="visible ? EyeOpenIcon : EyeCloseIcon"
+        :type="visible ? 'text' : 'password'"
+        density="compact"
+        placeholder="Enter your password"
+        :prepend-inner-icon="LockIcon"
+        variant="outlined"
+        @click:append-inner="visible = !visible"
+        v-model="password"
+      ></v-text-field>
+      <div class="text-sm-right pb-2">
+        <NuxtLink
+          class="text-caption text-decoration-none text-primary"
+          href="/admin/reset-password"
+        >
+          Forgot login password?</NuxtLink
+        >
+      </div>
+
+      <v-btn type="submit" block class="mb-8" size="large" color="primary">
+        <v-progress-circular indeterminate v-if="auth.loading" />
+        Log In
+      </v-btn>
+      {{ auth.user?.firstName }}
+      <br />
+    </v-card>
+  </form>
 </template>

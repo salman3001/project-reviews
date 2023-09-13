@@ -11,11 +11,11 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/apollo": "^5.0.0-alpha.6",
-    "@nuxtjs/tailwindcss": "^6.8.0",
     "nuxt": "^3.7.0",
     "nuxt-icon": "^0.5.0"
   },
   "dependencies": {
+    "@invictus.codes/nuxt-vuetify": "^0.3.0",
     "@pinia/nuxt": "^0.4.11",
     "pinia": "^2.1.6"
   },
