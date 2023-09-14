@@ -36,6 +36,8 @@ export class MailService {
         },
       });
     } catch (error) {
+      console.log(error);
+
       throw new GraphQLError('Error sending email');
     }
   }

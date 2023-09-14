@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxtjs/apollo",
     "@invictus.codes/nuxt-vuetify",
+    "@vee-validate/nuxt",
   ],
   apollo: {
     clients: {

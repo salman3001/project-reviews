@@ -87,7 +87,9 @@ export class AdminUserService {
       });
     }
 
-    return this.Prisma.adminUser.findUnique({ where: { id: createdUser.id } });
+    return await this.Prisma.adminUser.findUnique({
+      where: { id: createdUser.id },
+    });
   }
 
   async findAll() {

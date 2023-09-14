@@ -2,14 +2,30 @@
 import { Icon } from "#components";
 import useAuthStore from "~/store/useAuthStroe";
 import BrandLogo from "~/components/BrandLogo.vue";
+import { object, string } from "yup";
 
 definePageMeta({
   // middleware: ["guest"],
 });
 
-const email = useState("email", () => "");
-const password = useState("password", () => "");
+const { handleSubmit, handleReset } = useForm({
+  validationSchema: toTypedSchema(
+    object({
+      email: string()
+        .trim()
+        .email("Must be an email ")
+        .transform((v: string) => v.toLowerCase())
+        .required("required"),
+      password: string().trim().required("required"),
+    })
+  ),
+});
+
+const email = useField("email");
+const password = useField("password");
+
 const auth = useAuthStore();
+const { loading, loginMutation } = auth.login();
 const visible = useState("visible", () => false);
 
 const EyeOpenIcon = h(Icon, {
@@ -27,11 +43,18 @@ const LockIcon = h(Icon, {
   name: "mdi-lock-outline",
 });
 
-const variables = () => ({
-  input: {
-    email: email.value,
-    password: password.value,
-  },
+const {} = auth.login();
+
+const login = handleSubmit((values) => {
+  console.log(values);
+
+  const variables = () => ({
+    input: {
+      email: values.email,
+      password: values.password,
+    },
+  });
+  loginMutation(variables, handleReset);
 });
 </script>
 
@@ -46,7 +69,7 @@ const variables = () => ({
       position: relative;
       height: 100vh;
     "
-    @submit.prevent="auth.login(variables)"
+    @submit.prevent="login()"
   >
     <v-card
       class="mx-auto pa-6 pb-8"
@@ -67,7 +90,9 @@ const variables = () => ({
         placeholder="Email address"
         :prepend-inner-icon="MailIcon"
         variant="outlined"
-        v-model="email"
+        v-model="email.value.value"
+        :error="email.errorMessage.value ? true : false"
+        :error-messages="email.errorMessage.value"
       ></v-text-field>
 
       <div
@@ -84,7 +109,9 @@ const variables = () => ({
         :prepend-inner-icon="LockIcon"
         variant="outlined"
         @click:append-inner="visible = !visible"
-        v-model="password"
+        v-model="password.value.value"
+        :error="password.errorMessage.value ? true : false"
+        :error-messages="password.errorMessage.value"
       ></v-text-field>
       <div class="text-sm-right pb-2">
         <NuxtLink
@@ -95,11 +122,17 @@ const variables = () => ({
         >
       </div>
 
-      <v-btn type="submit" block class="mb-8" size="large" color="primary">
-        <v-progress-circular indeterminate v-if="auth.loading" />
+      <v-btn
+        type="submit"
+        block
+        class="mb-8"
+        size="large"
+        color="primary"
+        :disabled="loading"
+      >
+        <v-progress-circular indeterminate v-if="loading" />
         Log In
       </v-btn>
-      {{ auth.user?.firstName }}
       <br />
     </v-card>
   </form>

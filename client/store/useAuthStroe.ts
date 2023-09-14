@@ -14,33 +14,45 @@ const useAuthStore = defineStore("Auth", () => {
   const tost = useToastStore();
   const { onLogin, onLogout } = useApollo();
 
-  const loginQuery = gql`
-    mutation ($input: AdminSininInput!) {
-      adminSignIn(adminSigninInput: $input) {
-        token
-        user {
-          firstName
-          lastName
-          email
-          role
-          permissions
+  function login(): {
+    loading: Ref<boolean>;
+    loginMutation: (variables: any, resetFn: () => void) => Promise<void>;
+  } {
+    const loginQuery = gql`
+      mutation ($input: AdminSininInput!) {
+        adminSignIn(adminSigninInput: $input) {
+          token
+          user {
+            firstName
+            lastName
+            email
+            role
+            permissions
+          }
         }
       }
-    }
-  `;
+    `;
 
-  const { mutate, loading } = useMutation(loginQuery);
+    const { mutate, loading } = useMutation(loginQuery);
 
-  async function login(variables: any) {
-    try {
-      const result = await mutate(variables());
-      onLogin(result?.data.adminSignIn?.token);
-      user.value = result?.data?.adminSignIn?.user;
-      tost.fireTost("Login Successfull", "success");
-      navigateTo("/admin");
-    } catch (error) {
-      tost.fireTost("Login Failed check your credentials", "error");
-    }
+    const loginMutation = async (variables: any, resetFn: () => void) => {
+      try {
+        const result = await mutate(variables());
+        onLogin(result?.data.adminSignIn?.token);
+        user.value = result?.data?.adminSignIn?.user;
+        resetFn();
+        tost.fireTost("Login Successfull", "success");
+        navigateTo("/admin");
+      } catch (error) {
+        tost.fireTost("Login Failed check your credentials", "error");
+        resetFn();
+      }
+    };
+
+    return {
+      loading: loading,
+      loginMutation,
+    };
   }
 
   function logout() {
@@ -49,11 +61,29 @@ const useAuthStore = defineStore("Auth", () => {
     tost.fireTost("Logout Successfull", "success");
   }
 
+  async function sendForgotPasswordLink(to: string) {
+    const query = gql`
+      query ($to: String!) {
+        sendForgotPasswordEmail(to: $to)
+      }
+    `;
+
+    try {
+      const data = await useAsyncQuery({ query });
+      tost.fireTost("Password Rest Email Sent!", "success");
+      navigateTo("/reset-password");
+    } catch (error) {
+      tost.fireTost(
+        "Failed to send password reset link. Please contact support team",
+        "error"
+      );
+    }
+  }
+
   return {
     user,
     login,
     logout,
-    loading,
   };
 });
 

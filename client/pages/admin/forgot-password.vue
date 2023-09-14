@@ -1,13 +1,29 @@
 <script setup lang="ts">
 import { Icon } from "#components";
+import { object, string } from "yup";
 const visible = useState("visible", () => false);
 const confirmVisible = useState("confirmVisible", () => false);
+
 const EyeOpenIcon = h(Icon, {
   name: "material-symbols:visibility-outline-rounded",
 });
 const EyeCloseIcon = h(Icon, {
   name: "material-symbols:visibility-off-outline",
 });
+
+const { handleSubmit, handleReset } = useForm({
+  validationSchema: toTypedSchema(
+    object({
+      email: string()
+        .trim()
+        .email("Must be an email ")
+        .transform((v: string) => v.toLowerCase())
+        .required("required"),
+    })
+  ),
+});
+
+const email = useField("email");
 </script>
 
 <template>

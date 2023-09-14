@@ -8,6 +8,9 @@ import { GraphQLErrorFilter } from './filters/custom-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  process.on('unhandledRejection', (reason) => {
+    console.log('Unhandled error -reason :' + reason);
+  });
 
   app.enableCors();
   app.use(urlencoded({ extended: true, limit: '50mb' }));
