@@ -61,29 +61,42 @@ const useAuthStore = defineStore("Auth", () => {
     tost.fireTost("Logout Successfull", "success");
   }
 
-  async function sendForgotPasswordLink(to: string) {
+  function sendForgotPasswordEmail() {
     const query = gql`
       query ($to: String!) {
         sendForgotPasswordEmail(to: $to)
       }
     `;
 
-    try {
-      const data = await useAsyncQuery({ query });
-      tost.fireTost("Password Rest Email Sent!", "success");
-      navigateTo("/reset-password");
-    } catch (error) {
-      tost.fireTost(
-        "Failed to send password reset link. Please contact support team",
-        "error"
-      );
-    }
+    const { load, loading, onError, onResult } = useLazyQuery(query);
+
+    const sendForgotPasswordEmail = async (to: string) => {
+      // if(resul)
+      // tost.fireTost("Password Reset Email Sent!", "success");
+      load(query, { to });
+
+      onError((err) => {
+        tost.fireTost(
+          "Failed to send password reset link. Please contact support team",
+          "error"
+        );
+      });
+      onResult((err) => {
+        tost.fireTost("Password reset Email Sent", "success");
+      });
+    };
+
+    return {
+      sendForgotPasswordEmail,
+      loading,
+    };
   }
 
   return {
     user,
     login,
     logout,
+    sendForgotPasswordEmail,
   };
 });
 

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { BrandLogo } from "#build/components";
-
 const drawer = useState("drawer", () => false);
 </script>
 
@@ -19,10 +17,33 @@ const drawer = useState("drawer", () => false);
             <Icon name="material-symbols:lists" size="30"
           /></v-btn>
         </v-app-bar-nav-icon>
+        <div class="pl-6">
+          <BrandLogo />
+        </div>
       </template>
       <v-app-bar-title>
-        <!-- <BrandLogo /> -->
+        <AdminNavMenu
+          :items="[
+            { title: 'Users', href: '/admin/users' },
+            { title: 'Roles & Permissions', href: '/admin/roles' },
+          ]"
+        />
       </v-app-bar-title>
+      <template v-slot:append>
+        <v-container>
+          <v-row align="center">
+            <v-col>
+              <AdminSearchBar />
+            </v-col>
+            <v-col>
+              <AdminNotificationMenu />
+            </v-col>
+            <v-col>
+              <AdminAvatar />
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
     </v-app-bar>
 
     <v-main

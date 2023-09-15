@@ -31,7 +31,7 @@ console.log(join(__dirname, '/templates'));
         transport: {
           host: config.get('mail.host'),
           port: config.get('mail.host'),
-          secure: false,
+          secure: true,
           auth: {
             user: config.get('mail.user'),
             pass: config.get('mail.pass'),

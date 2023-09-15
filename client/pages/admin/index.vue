@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import useAuthStore from "~/store/useAuthStroe";
-
 definePageMeta({
   layout: "admin-dashboard-layout",
   // middleware: ["auth"],

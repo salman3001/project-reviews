@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { Icon } from "#components";
 import { object, string } from "yup";
+import useAuthStore from "~/store/useAuthStroe";
 const visible = useState("visible", () => false);
+
 const confirmVisible = useState("confirmVisible", () => false);
 
 const EyeOpenIcon = h(Icon, {
@@ -23,11 +25,18 @@ const { handleSubmit, handleReset } = useForm({
   ),
 });
 
+const { sendForgotPasswordEmail, loading } =
+  useAuthStore().sendForgotPasswordEmail();
+
+const sendEmail = handleSubmit(async (value) => {
+  sendForgotPasswordEmail(value.email);
+});
+
 const email = useField("email");
 </script>
 
 <template>
-  <div
+  <form
     class="p-2 centered"
     color="secondary"
     style="
@@ -37,6 +46,7 @@ const email = useField("email");
       position: relative;
       height: 100vh;
     "
+    @submit.prevent="sendEmail()"
   >
     <v-card
       class="mx-auto pa-6 pb-8"
@@ -47,38 +57,32 @@ const email = useField("email");
       style="top: 50%; transform: translateY(-50%)"
     >
       <BrandLogo />
-      <v-card-text class="text-h5 text-center">Reset your password</v-card-text>
+      <v-card-text class="text-h5 text-center">Forgot Password?</v-card-text>
       <v-card-text class="text-caption">
-        Please choose a new password
+        Please enter your email id to recieve a password reset link
       </v-card-text>
-      <div class="text-subtitle-1 text-medium-emphasis">New Password</div>
+      <div class="text-subtitle-1 text-medium-emphasis">Email</div>
       <v-text-field
-        :append-inner-icon="visible ? EyeOpenIcon : EyeCloseIcon"
-        :type="visible ? 'text' : 'password'"
         density="compact"
-        placeholder="Enter new password"
+        placeholder="Email address"
+        prepend-inner-icon="mdi-email-outline"
         variant="outlined"
-        @click:append-inner="visible = !visible"
+        v-model="email.value.value"
+        :error="email.errorMessage.value ? true : false"
+        :error-messages="email.errorMessage.value"
       ></v-text-field>
 
-      <div
-        class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
+      <v-btn
+        type="submit"
+        block
+        class="mb-8"
+        size="large"
+        color="primary"
+        :disabled="loading"
       >
-        Confirm New Password
-      </div>
-
-      <v-text-field
-        :append-inner-icon="confirmVisible ? EyeOpenIcon : EyeCloseIcon"
-        :type="confirmVisible ? 'text' : 'password'"
-        density="compact"
-        placeholder="Confirm new password"
-        variant="outlined"
-        @click:append-inner="confirmVisible = !confirmVisible"
-      ></v-text-field>
-
-      <v-btn block class="mb-8" size="large" color="primary">
-        Reset Password
+        <v-progress-circular indeterminate v-if="loading" />
+        Send Link
       </v-btn>
     </v-card>
-  </div>
+  </form>
 </template>

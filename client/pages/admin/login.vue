@@ -116,7 +116,7 @@ const login = handleSubmit((values) => {
       <div class="text-sm-right pb-2">
         <NuxtLink
           class="text-caption text-decoration-none text-primary"
-          href="/admin/reset-password"
+          href="/admin/forgot-password"
         >
           Forgot login password?</NuxtLink
         >
