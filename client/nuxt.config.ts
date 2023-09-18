@@ -1,3 +1,9 @@
+import {
+  VDataTable,
+  VDataTableServer,
+  VDataTableVirtual,
+} from "vuetify/labs/VDataTable";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
@@ -16,7 +22,13 @@ export default defineNuxtConfig({
     },
   },
   vuetify: {
-    vuetifyOptions: {},
+    vuetifyOptions: {
+      components: {
+        VDataTable,
+        VDataTableServer,
+        VDataTableVirtual,
+      },
+    },
     moduleOptions: {
       treeshaking: true,
       useIconCDN: true,
@@ -31,4 +43,5 @@ export default defineNuxtConfig({
       GQL_HOST: "http://127.0.0.1:3001/graphql",
     },
   },
+  css: ["~/assets/css/main.css"],
 });

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "#components";
 
-defineProps<{ items: { title: string; href: string }[] }>();
+defineProps<{ title: string }>();
 const arrowUpIcon = h(Icon, {
   name: "material-symbols:keyboard-arrow-up",
 });
@@ -16,17 +16,11 @@ const arrowUpIcon = h(Icon, {
         v-bind="props"
         :append-icon="arrowUpIcon"
       >
-        Admin Users
+        {{ title }}
       </v-btn>
     </template>
-    <v-list class="rounded-lg">
-      <v-list-item v-for="(item, index) in items" :key="index" :value="index">
-        <v-list-item-title>
-          <NuxtLink :href="item.href">
-            {{ item.title }}
-          </NuxtLink>
-        </v-list-item-title>
-      </v-list-item>
+    <v-list class="rounded-lg" style="border-top: solid black 4px">
+      <slot />
     </v-list>
   </v-menu>
 </template>
