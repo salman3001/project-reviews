@@ -1,27 +1,26 @@
 <script setup lang="ts">
+import { adminUserIndexQuery } from "~/queries/adminUsers";
+
 definePageMeta({
   layout: "admin-dashboard-layout",
 });
 
 const itemsPerPage = useState("itemsPerPage", () => 10);
+const page = useState("page", () => 1);
+const perPage = useState("perPage", () => 10);
+const search = useState<null | string>("search", () => null);
+const roleId = useState<null | number>("roleId", () => null);
+const sortBy = useState<null | string>("null", () => null);
 
-const headers = [
-  {
-    title: "Dessert (100g serving)",
-    align: "start",
-    sortable: false,
-    key: "name",
-  },
-  { title: "Calories", key: "calories", align: "end" },
-  { title: "Fat (g)", key: "fat", align: "end" },
-  { title: "Carbs (g)", key: "carbs", align: "end" },
-  { title: "Protein (g)", key: "protein", align: "end" },
-  { title: "Iron (%)", key: "iron", align: "end" },
-];
+const variable = () => ({
+  page: page.value,
+  perPage: perPage.value,
+  roleId: roleId.value,
+  search: search.value,
+  sortBy: sortBy.value,
+});
 
-const { load, loading, onError, onResult, result } = useLazyQuery(query);
-
-const search = "";
+const { result, loading, refetch } = useQuery(adminUserIndexQuery, variable);
 </script>
 
 <template>
@@ -30,7 +29,7 @@ const search = "";
   >
     <div class="d-flex justify-space-between" style="width: 100%">
       <div>
-        <AdminSearchInput />
+        <AdminSearchInput name="search" v-model="search" />
       </div>
       <div class="d-flex" style="gap: 20px">
         <v-select
@@ -56,8 +55,11 @@ const search = "";
         </NuxtLink>
       </div>
     </div>
-    <v-data-table-server
-      v-model:items-per-page="itemsPerPage"
+
+    sdsdsdsd
+    {{ result }}
+    <!-- <v-data-table-server
+      v-model:items-per-page="perPage"
       :headers="headers"
       :items-length="result.totalItems"
       :items="result.Items"
@@ -65,7 +67,7 @@ const search = "";
       :search="search"
       class="elevation-1"
       item-value="name"
-      @update:options="load"
-    ></v-data-table-server>
+      @update:options="refresh"
+    ></v-data-table-server> -->
   </div>
 </template>

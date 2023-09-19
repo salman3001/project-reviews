@@ -5,6 +5,7 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { hashSync } from 'bcrypt';
 import { ImageService } from '@root/src/modules/image/image.service';
 import { SocialService } from '../social/social.service';
+import { FindAllAdminuserInput } from '@root/src/modules/admin/admin-user/dto/findAllAdminuserInput.dto';
 
 @Injectable()
 export class AdminUserService {
@@ -92,8 +93,48 @@ export class AdminUserService {
     });
   }
 
-  async findAll() {
-    const users = await this.Prisma.adminUser.findMany();
+  async findAll(findAllInput: FindAllAdminuserInput) {
+    const { page, perPage, search, sortBy, roleId } = findAllInput;
+    let users = [];
+    const or = {};
+    const and = {};
+
+    if (search) {
+      or['OR'] = [
+        {
+          firstName: {
+            contains: search,
+          },
+        },
+        {
+          lastName: {
+            contains: search,
+          },
+        },
+      ];
+    }
+
+    if (roleId) {
+      and['AND'] = {
+        roleId,
+      };
+    }
+
+    if (sortBy) {
+      users = await this.Prisma.adminUser.findMany({
+        where: { ...or, ...and },
+        orderBy: { [sortBy]: 'asc' },
+        skip: page - 1,
+        take: perPage,
+      });
+    } else {
+      users = await this.Prisma.adminUser.findMany({
+        where: { ...or, ...and },
+        skip: page - 1,
+        take: perPage,
+      });
+    }
+
     return users;
   }
 
@@ -141,5 +182,10 @@ export class AdminUserService {
         role: { id: roleId },
       },
     });
+  }
+
+  async getCount() {
+    const count = await this.Prisma.adminUser.count();
+    return count;
   }
 }

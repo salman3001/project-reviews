@@ -38,12 +38,14 @@ export class ImageService {
     return this.prisma.image.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.image.findUnique({
+  async findOne(id: number) {
+    const image = await this.prisma.image.findUnique({
       where: {
         id,
       },
     });
+
+    return image;
   }
 
   async update(id: number, updateImageInput: UpdateImageInput) {

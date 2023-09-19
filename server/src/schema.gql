@@ -21,7 +21,7 @@ type AdminUser {
   firstName: String!
   lastName: String!
   email: String!
-  phone: Int!
+  phone: Int
   isActive: Boolean!
   roleId: Int
   lastSeen: DateTime
@@ -30,6 +30,9 @@ type AdminUser {
   createdAt: DateTime!
   updatedAt: DateTime!
   role: Role
+  Address: Address
+  Avatar: [Image!]
+  Role: Role
 }
 
 """
@@ -41,6 +44,23 @@ type Role {
   id: Float!
   name: String!
   Permissions: [Permission!]
+}
+
+type Address {
+  id: String!
+  address: String!
+  cityId: Int
+  stateId: Int
+  countryId: Int
+  zip: String!
+  adminUserId: Int
+}
+
+type Image {
+  id: Int!
+  alt: String
+  url_sm: String!
+  url: String!
 }
 
 type Permission {
@@ -94,13 +114,6 @@ type SupportTicketMessage {
   exampleField: Int!
 }
 
-type Image {
-  id: Int!
-  alt: String
-  url_sm: String!
-  url: String!
-}
-
 type Country {
   id: Int!
   name: String!
@@ -121,25 +134,20 @@ type City {
   isActive: Boolean!
 }
 
-type Address {
-  id: String!
-  address: String!
-  cityId: Int
-  stateId: Int
-  countryId: Int
-  zip: String!
-  adminUserId: Int
-}
-
 type Query {
-  adminUsers: [AdminUser!]!
+  adminUsers(findAllInput: FindAllAdminuserInput!): [AdminUser!]!
   adminUser(id: Int!): AdminUser!
+  getAdminUserCount: Int!
+  findAllAddress: [Address!]!
+  findOneAddress(id: Int!): Address!
+  findAllImages: [Image!]!
+  findOneImage(id: Int!): Image!
   findAllRoles: [Role!]!
   findOneRole(id: Int!): Role!
-  permissions: [Permission!]!
-  permission(id: Int!): Permission!
   findAllSocial: [Social!]!
   findOneSocial(id: Int!): Social!
+  permissions: [Permission!]!
+  permission(id: Int!): Permission!
   findAllHelpCenterContent: [HelpCenterContent!]!
   findOneHelpCenterContent(id: Int!): HelpCenterContent!
   findAllHelpCenterCategor: [HelpCenterCategory!]!
@@ -149,16 +157,20 @@ type Query {
   supportTicketMessage(id: Int!): SupportTicketMessage!
   sendForgotPasswordEmail(to: String!): String!
   sendVarificationEmail(to: String!): String!
-  findAllImages: [Image!]!
-  findOneImage(id: Int!): Image!
   findAllCountry: [Country!]!
   findOneCountry(id: Int!): Country!
   findAllState: [State!]!
   findOneState(id: Int!): State!
   findAllCity: [City!]!
   findOneCity(id: Int!): City!
-  findAllAddress: [Address!]!
-  findOneAddress(id: Int!): Address!
+}
+
+input FindAllAdminuserInput {
+  page: Int!
+  perPage: Int!
+  search: String
+  sortBy: String
+  roleId: Int
 }
 
 type Mutation {
@@ -166,6 +178,12 @@ type Mutation {
   createAdminUser(createAdminUserInput: CreateAdminUserInput!): AdminUser!
   updateAdminUser(updateAdminUserInput: UpdateAdminUserInput!): AdminUser!
   removeAdminUser(id: Int!): AdminUser!
+  createAddress(createAddressInput: CreateAddressInput!): Address!
+  updateAddress(updateAddressInput: UpdateAddressInput!): Address!
+  removeAddress(id: Int!): Address!
+  createImage(createImageInput: CreateImageInput!): Image!
+  updateImage(updateImageInput: UpdateImageInput!): Image!
+  removeImage(id: Int!): Image!
   createRole(createRoleInput: CreateRoleInput!): Role!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
   removeRole(id: Int!): Role!
@@ -185,9 +203,6 @@ type Mutation {
   createSupportTicketMessage(createSupportTicketMessageInput: CreateSupportTicketMessageInput!): SupportTicketMessage!
   updateSupportTicketMessage(updateSupportTicketMessageInput: UpdateSupportTicketMessageInput!): SupportTicketMessage!
   removeSupportTicketMessage(id: Int!): SupportTicketMessage!
-  createImage(createImageInput: CreateImageInput!): Image!
-  updateImage(updateImageInput: UpdateImageInput!): Image!
-  removeImage(id: Int!): Image!
   createCountry(createCountryInput: CreateCountryInput!): Country!
   updateCountry(updateCountryInput: UpdateCountryInput!): Country!
   removeCountry(id: Int!): Country!
@@ -197,9 +212,6 @@ type Mutation {
   createCity(createCityInput: CreateCityInput!): City!
   updateCity(updateCityInput: UpdateCityInput!): City!
   removeCity(id: Int!): City!
-  createAddress(createAddressInput: CreateAddressInput!): Address!
-  updateAddress(updateAddressInput: UpdateAddressInput!): Address!
-  removeAddress(id: Int!): Address!
 }
 
 input AdminSininInput {
@@ -256,6 +268,25 @@ input UpdateAdminUserInput {
   avatar: Upload
   createAddressInput: CreateAddressInput
   createSocialInput: CreateSocialInput
+  id: Int!
+}
+
+input UpdateAddressInput {
+  address: String
+  cityId: Int
+  stateId: Int
+  countryId: Int
+  zip: String
+  adminUserId: Int
+  id: Int!
+}
+
+input CreateImageInput {
+  file: Upload!
+}
+
+input UpdateImageInput {
+  file: Upload
   id: Int!
 }
 
@@ -342,15 +373,6 @@ input UpdateSupportTicketMessageInput {
   id: Int!
 }
 
-input CreateImageInput {
-  file: Upload!
-}
-
-input UpdateImageInput {
-  file: Upload
-  id: Int!
-}
-
 input CreateCountryInput {
   name: String!
   isActive: Boolean!
@@ -385,15 +407,5 @@ input UpdateCityInput {
   name: String
   stateId: Int
   isActive: Boolean
-  id: Int!
-}
-
-input UpdateAddressInput {
-  address: String
-  cityId: Int
-  stateId: Int
-  countryId: Int
-  zip: String
-  adminUserId: Int
   id: Int!
 }

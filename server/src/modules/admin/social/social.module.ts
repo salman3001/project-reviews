@@ -4,5 +4,6 @@ import { SocialResolver } from './social.resolver';
 
 @Module({
   providers: [SocialResolver, SocialService],
+  exports: [SocialService],
 })
 export class SocialModule {}

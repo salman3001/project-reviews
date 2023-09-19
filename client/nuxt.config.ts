@@ -1,8 +1,8 @@
-import {
-  VDataTable,
-  VDataTableServer,
-  VDataTableVirtual,
-} from "vuetify/labs/VDataTable";
+// import {
+//   VDataTable,
+//   VDataTableServer,
+//   VDataTableVirtual,
+// } from "vuetify/labs/VDataTable";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -23,11 +23,11 @@ export default defineNuxtConfig({
   },
   vuetify: {
     vuetifyOptions: {
-      components: {
-        VDataTable,
-        VDataTableServer,
-        VDataTableVirtual,
-      },
+      // components: {
+      //   VDataTable,
+      //   VDataTableServer,
+      //   VDataTableVirtual,
+      // },
     },
     moduleOptions: {
       treeshaking: true,

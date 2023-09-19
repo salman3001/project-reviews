@@ -15,7 +15,7 @@ export class AdminUser implements Omit<admin, 'password'> {
   @Field(() => String)
   email: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   phone: string;
 
   @Field(() => Boolean)

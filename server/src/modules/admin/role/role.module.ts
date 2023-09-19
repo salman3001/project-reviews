@@ -5,5 +5,6 @@ import { PermissionService } from '../permission/permission.service';
 
 @Module({
   providers: [RoleResolver, RoleService, PermissionService],
+  exports: [RoleService, PermissionService],
 })
 export class RoleModule {}
